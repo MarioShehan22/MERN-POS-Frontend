@@ -42,9 +42,8 @@ const Order:React.FC = ()=>{
     const [description,setDescription]=useState('');
     const [unitPrice,setUnitPrice]=useState<number | ''>('');
     const [qtyOnHand,setQtyOnHand]=useState<number | ''>('');
-    let [netTotal,setNetTotal]=useState<number>(0);
-    let [tableProducts,setTableProducts]=useState([]);
 
+    let netTotal = 0;
     useEffect(()=>{
         findAllCustomers();
         findAllProducts();
@@ -78,13 +77,14 @@ const Order:React.FC = ()=>{
     }
 
     const addToCart = (newItem: Cart) => {
-        const newItemWithTotal = {
-            ...newItem,
-            total: newItem.qty * (newItem.unitPrice || 0),
-        };
-        setCart((prevState) => [...prevState, newItemWithTotal]);
-        console.log('Item with Total:', newItemWithTotal);
+        setCart((prevState)=>[...prevState,newItem]);
     };
+
+    const getTotal = () => {
+        netTotal = cart.reduce((total, products) => total + products.unitPrice * products.qty, 0);
+        console.log(netTotal);
+        return netTotal;
+    }
 
     return (
         <>
@@ -170,9 +170,8 @@ const Order:React.FC = ()=>{
                                         qty: userQty,
                                         total: (userQty * (unitPrice ? unitPrice : 0)),
                                     };
-                                    setTableProducts(prevProducts => [...prevProducts, cartProduct]);
-                                    setNetTotal(prevNetTotal => prevNetTotal + cartProduct.total);
                                     addToCart(cartProduct);
+                                    getTotal();
                         }}>+ Add Product</button>
                     </div>
                 </div>
@@ -214,7 +213,7 @@ const Order:React.FC = ()=>{
                         <div className="bottom-context" style={bottomContext}>
                             <div className="total-outer">
                                 <h1 style={totalText}>
-                                    Total : {netTotal}
+                                    Total : {getTotal()}
                                 </h1>
                             </div>
                             <div className="place-order-button-context">
