@@ -24,6 +24,7 @@ const Order:React.FC = ()=>{
     }
     const totalText:React.CSSProperties={
         color:'red',
+        fontStyle:'bold',
         margin:'0'
     }
 
